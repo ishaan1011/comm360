@@ -126,7 +126,7 @@ const createPeerConnection = (offerObj)=>{
         })
         
         peerConnection.addEventListener('track',e=>{
-            console.log("Got a track from the other peer!! How exciting")
+            console.log("Got a track from the other peer!! How excting")
             console.log(e)
             e.streams[0].getTracks().forEach(track=>{
                 remoteStream.addTrack(track,remoteStream);
