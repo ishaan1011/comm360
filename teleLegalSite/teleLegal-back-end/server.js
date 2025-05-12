@@ -2,7 +2,6 @@
 
 const fs = require('fs'); //the file system
 const https = require('https');
-const http = require('http');
 const express = require('express');
 const cors = require('cors');
 
@@ -12,19 +11,12 @@ app.use(cors()) //this will open our Express API to ANY domain
 app.use(express.static(__dirname+'/public'));
 app.use(express.json()); //this will allow us to parse json in the body with the body parser
 
-// const key = fs.readFileSync('./certs/cert.key'); //for local development https
-// const cert = fs.readFileSync('./certs/cert.crt'); //for local development https
+const key = fs.readFileSync('./certs/cert.key');
+const cert = fs.readFileSync('./certs/cert.crt');
 
-// const expressServer = https.createServer({key, cert}, app); //for local development https
-const expressServer = http.createServer({}, app);
+const expressServer = https.createServer({key, cert}, app);
 const io = socketio(expressServer,{
-    cors: [
-        'https://localhost:3000',
-        'https://localhost:3001',
-        'https://localhost:3002',
-        'https://www.comm360.space',
-        // 'http://www.comm360.space', TEST ONLY
-    ]
+    cors: ['https://localhost:3000','https://localhost:3001','https://localhost:3002']
 })
 
 expressServer.listen(9000);

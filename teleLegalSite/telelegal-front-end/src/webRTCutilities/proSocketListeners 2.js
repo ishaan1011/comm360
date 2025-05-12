@@ -1,6 +1,6 @@
 import updateCallStatus from '../redux-elements/actions/updateCallStatus';
 
-const proDashabordSocketListeners = (socket,setApptInfo,dispatch)=>{
+const proSocketListeners = (socket,setApptInfo,dispatch)=>{
     socket.on('apptData',apptData=>{
         console.log(apptData)
         setApptInfo(apptData)
@@ -11,12 +11,7 @@ const proDashabordSocketListeners = (socket,setApptInfo,dispatch)=>{
         dispatch(updateCallStatus('offer',offerData.offer))
         dispatch(updateCallStatus('myRole','answerer'))
     })
+
 }
 
-    const proVideoSocketListeners = (socket,addIceCandidateToPc)=>{
-        socket.on('iceToClient',iceC=>{
-            addIceCandidateToPc(iceC)
-        })
-    }
-
-export default { proDashabordSocketListeners,proVideoSocketListeners }
+export default proSocketListeners

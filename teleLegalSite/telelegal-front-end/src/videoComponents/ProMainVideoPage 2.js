@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 import createPeerConnection from "../webRTCutilities/createPeerConnection";
 import socketConnection from '../webRTCutilities/socketConnection';
 import updateCallStatus from "../redux-elements/actions/updateCallStatus";
-import proSocketListeners from "../webRTCutilities/proSocketListeners";
 
 const ProMainVideoPage = ()=>{
 
@@ -22,8 +21,6 @@ const ProMainVideoPage = ()=>{
     const [ apptInfo, setApptInfo ] = useState({})
     const smallFeedEl = useRef(null); //this is a React ref to a dom element, so we can interact with it the React way
     const largeFeedEl = useRef(null);
-    const [ haveGottenIce, setHaveGottenIce ] = useState(false)
-    const streamsRef = useRef(null);
 
     useEffect(()=>{
         //fetch the user media
@@ -45,38 +42,12 @@ const ProMainVideoPage = ()=>{
                 //EXCEPT, it's not time yet. 
                     //SDP = information about the feed, and we have NO tracks
                 //socket.emit...
-                largeFeedEl.current.srcObject = remoteStream
             }catch(err){
                 console.log(err);
             }
         }
         fetchMedia()
     },[])
-
-    useEffect(()=>{
-        const getIceAsync = async()=>{
-            const socket = socketConnection(searchParams.get('token'))
-            const uuid = searchParams.get('uuid');
-            const iceCandidates = await socket.emitWithAck('getIce',uuid,"professional")
-            console.log("iceCandidate Received");
-            console.log(iceCandidates);
-            iceCandidates.forEach(iceC=>{
-                for(const s in streams){
-                    if(s !== 'localStream'){
-                        const pc = streams[s].peerConnection;
-                        pc.addIceCandidate(iceC)
-                        console.log("=======Added Ice Candidate!!!!!!!")
-                    }
-                }
-            })
-        }
-        if(streams.remote1 && !haveGottenIce){
-            setHaveGottenIce(true);
-            getIceAsync()
-            streamsRef.current = streams; //update streamsRef once we know streams exists
-        }
-        
-    },[streams,haveGottenIce])
 
     useEffect(()=>{
         const setAsyncOffer = async()=>{
@@ -128,30 +99,12 @@ const ProMainVideoPage = ()=>{
         const token = searchParams.get('token');
         console.log(token)
         const fetchDecodedToken = async()=>{
-            const resp = await axios.post('https://api.comm360.space/validate-link',{token});
+            const resp = await axios.post('https://localhost:9000/validate-link',{token});
             console.log(resp.data);
             setApptInfo(resp.data)
         }
         fetchDecodedToken();
     },[])
-
-    useEffect(()=>{
-        //grab the token var out of the query string
-        const token = searchParams.get('token');
-        const socket = socketConnection(token);
-        proSocketListeners.proVideoSocketListeners(socket,addIceCandidateToPc);
-    },[])
-
-    const addIceCandidateToPc = (iceC)=>{
-        //add an ice candidate form the remote, to the pc
-        for (const s in streamsRef.current){
-            if(s !== 'localStream'){
-                const pc = streamsRef.current[s].peerConnection;
-                pc.addIceCandidate(iceC);
-                console.log("Added an iceCandidate to existing page presence")
-            }
-        }
-    }
 
     const addIce = (iceC)=>{
         //emit ice candidate to the server
@@ -179,10 +132,7 @@ const ProMainVideoPage = ()=>{
                 }
                 <ChatWindow />
             </div>
-            <ActionButtons 
-                smallFeedEl={smallFeedEl} 
-                largeFeedEl={largeFeedEl}
-            />
+            <ActionButtons smallFeedEl={smallFeedEl} />
         </div>
     )
 }
