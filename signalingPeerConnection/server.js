@@ -97,6 +97,7 @@ io.on('connection',(socket)=>{
         const { didIOffer, iceUserName, iceCandidate } = iceCandidateObj;
         // console.log(iceCandidate);
         if(didIOffer){
+            //this ice is coming from the offerer. Send to the answerer
             const offerInOffers = offers.find(o=>o.offererUserName === iceUserName);
             if(offerInOffers){
                 offerInOffers.offerIceCandidates.push(iceCandidate)
@@ -112,7 +113,7 @@ io.on('connection',(socket)=>{
                     }
                 }
             }
-        } else {
+        }else{
             //this ice is coming from the answerer. Send to the offerer
             //pass it through to the other socket
             const offerInOffers = offers.find(o=>o.answererUserName === iceUserName);
@@ -122,9 +123,10 @@ io.on('connection',(socket)=>{
             }else{
                 console.log("Ice candidate recieved but could not find offerer")
             }
-
         }
         // console.log(offers)
     })
 
 })
+
+

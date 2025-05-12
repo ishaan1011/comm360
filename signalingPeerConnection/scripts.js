@@ -2,7 +2,7 @@ const userName = "Rob-"+Math.floor(Math.random() * 100000)
 const password = "x";
 document.querySelector('#user-name').innerHTML = userName;
 
-const socket = io.connect('https://100.80.42.180:8181/',{
+const socket = io.connect('https://localhost:8181/',{
     auth: {
         userName,password
     }
@@ -102,6 +102,7 @@ const createPeerConnection = (offerObj)=>{
         remoteStream = new MediaStream()
         remoteVideoEl.srcObject = remoteStream;
 
+
         localStream.getTracks().forEach(track=>{
             //add localtracks so that they can be sent once the connection is established
             peerConnection.addTrack(track,localStream);
@@ -123,9 +124,9 @@ const createPeerConnection = (offerObj)=>{
                 })    
             }
         })
-
+        
         peerConnection.addEventListener('track',e=>{
-            console.log("Got a track from the other peer!! How excting")
+            console.log("Got a track from the other peer!! How exciting")
             console.log(e)
             e.streams[0].getTracks().forEach(track=>{
                 remoteStream.addTrack(track,remoteStream);
@@ -148,7 +149,6 @@ const addNewIceCandidate = iceCandidate=>{
     peerConnection.addIceCandidate(iceCandidate)
     console.log("======Added Ice Candidate======")
 }
-
 
 
 document.querySelector('#call').addEventListener('click',call)

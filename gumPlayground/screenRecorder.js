@@ -29,7 +29,7 @@ const stopRecording = ()=>{
     }
     console.log("stop recording")
     mediaRecorder.stop()
-    changeButtons([ 
+    changeButtons([
         'green','green','blue','blue','green','green','blue','blue'
     ])
 

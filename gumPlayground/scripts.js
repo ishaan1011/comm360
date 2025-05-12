@@ -1,10 +1,11 @@
 const videoEl = document.querySelector('#my-video');
-let stream = null
+let stream = null // Init stream var so we can use anywhere
 let mediaStream = null //Init mediaStream var for screenShare
 const constraints = {
-    audio: true,
+    audio: true, //use your headphones, or be prepared for feedback!
     video: true,
 }
+
 
 const getMicAndCamera = async(e)=>{
     try{
@@ -32,8 +33,8 @@ const showMyFeed = e=>{
     changeButtons([
         'green','green','blue','blue','blue','grey','grey','blue'
     ])
-}
 
+}
 const stopMyFeed = e=>{
     if(!stream){
         alert("Stream still loading...")
@@ -41,10 +42,11 @@ const stopMyFeed = e=>{
     }
     const tracks = stream.getTracks();
     tracks.forEach(track=>{
+        // console.log(track)
         track.stop(); //disassociates the track with the source
     })
     changeButtons([
-        'green','green','blue','blue','blue','grey','grey','blue'
+        'blue','grey','grey','grey','grey','grey','grey','grey'
     ])
 }
 
